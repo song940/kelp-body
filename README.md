@@ -16,12 +16,14 @@ const app = kelp();
 
 app.use(body);
 
-app.use(function(){
+app.use(function(req, res, next){
   console.log(req.url);
   console.log(req.path);
   console.log(req.query);
   console.log(req.text);
   console.log(req.body);
+  console.log(req.files);
+  next();
 });
 ```
 

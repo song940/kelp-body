@@ -5,9 +5,15 @@ const body = require('../');
 const app = kelp();
 
 app.use(body);
+
 app.use(function(req, res, next){
-  console.log(req.body);
-  console.log(req.files);
+  if(req.path == '/upload'){
+    return res.end(JSON.stringify(req.body));
+  }
+  next();
+});
+
+app.use(function(req, res, next){
   // show a file upload form
   res.writeHead(200, {'content-type': 'text/html'});
   res.end(

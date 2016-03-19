@@ -1,6 +1,6 @@
 {
   "name": "kelp-body",
-  "version": "1.0.1",
+  "version": "1.2.0",
   "description": "parse request for kelp",
   "main": "index.js",
   "scripts": {
@@ -23,8 +23,7 @@
     "example": "example"
   },
   "dependencies": {
-    "kelp": "^1.0.2",
-    "multiparty": "^4.1.2"
+    "multiparty": "*"
   },
   "keywords": [
     "kelp",
