@@ -39,9 +39,17 @@ module.exports = function(req, res, next){
         break;
     }
   };
-  /**
-   * [description]
-   */
+  
+  
+  var buffer = new Buffer([]);
+  req.on('data', function(chunk){
+    buffer = Buffer.concat([ buffer, chunk ]);
+  }).on('end', function(){
+    req.data = buffer;
+    req.text = buffer.toString();
+    parse();
+  });
+  
   if(contentType == 'multipart/form-data'){
     var form = new multiparty.Form();
     form.parse(req, function(err, fields, files) {
@@ -49,15 +57,6 @@ module.exports = function(req, res, next){
       req.body = fields;
       req.files = files;
       next();
-    });
-  }else{
-    var buffer = new Buffer([]);
-    req.on('data', function(chunk){
-      buffer = Buffer.concat([ buffer, chunk ]);
-    }).on('end', function(){
-      req.data = buffer;
-      req.text = buffer.toString();
-      parse();
     });
   }
 
