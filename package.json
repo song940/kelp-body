@@ -23,7 +23,7 @@
     "example": "example"
   },
   "dependencies": {
-    "multiparty": "*"
+    "mail2": "*"
   },
   "keywords": [
     "kelp",
