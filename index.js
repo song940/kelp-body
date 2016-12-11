@@ -31,12 +31,10 @@ module.exports = function(req, res, next){
       case 'application/x-www-form-urlencoded':
         req.body = qs.parse(req.text);
         break;
-      case 'json':
+      case 'text/plain':
+        req.text = req.data.toString();
       case 'application/json':
         req.body = JSON.parse(req.text);
-        break;
-      case 'text/plain':
-        req.text = buffer.toString();
         break;
     }
     next();
