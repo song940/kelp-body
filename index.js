@@ -13,10 +13,11 @@ MIME.CRLF = '\r\n';
  * @return {[type]}        [description]
  */
 module.exports = function(req, res, next){
-  var u     = url.parse(req.url, true);
-  req.path  = u.pathname;
-  req.query = u.query;
-
+  try{
+    var u = url.parse(req.url, true);
+    req.path  = u.pathname;
+    req.query = u.query;
+  }catch(e){};
   var contentType = req.headers[ 'content-type' ];
   var type = (contentType || '').split(';')[0];
   var buffer = new Buffer([]);
@@ -25,19 +26,20 @@ module.exports = function(req, res, next){
   }).on('end', function(){
     req.data = buffer;
     switch (type) {
+      case 'text/plain':
+        req.text = req.data.toString();
+        break;
       case 'multipart/form-data':
         req.body = MIME.parse(req.data, contentType);
         break;
       case 'application/x-www-form-urlencoded':
         req.body = qs.parse(req.text);
         break;
-      case 'text/plain':
-        req.text = req.data.toString();
       case 'application/json':
+        req.text = req.data.toString();
         req.body = JSON.parse(req.text);
         break;
     }
     next();
   });
-
 };
