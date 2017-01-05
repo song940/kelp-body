@@ -25,9 +25,9 @@ module.exports = function(req, res, next){
     buffer = Buffer.concat([ buffer, chunk ]);
   }).on('end', function(){
     req.data = buffer;
+    req.text = buffer.toString();
     switch (type) {
       case 'text/plain':
-        req.text = req.data.toString();
         break;
       case 'multipart/form-data':
         req.body = MIME.parse(req.data, contentType);
@@ -36,7 +36,6 @@ module.exports = function(req, res, next){
         req.body = qs.parse(req.text);
         break;
       case 'application/json':
-        req.text = req.data.toString();
         req.body = JSON.parse(req.text);
         break;
     }
