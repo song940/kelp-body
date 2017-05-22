@@ -1,5 +1,5 @@
 'use strict';
-const url  = require('url');
+const URI  = require('url');
 const qs   = require('querystring');
 const MIME = require('mail2/mime');
 
@@ -14,9 +14,10 @@ MIME.CRLF = '\r\n';
  */
 module.exports = function(req, res, next){
   try{
-    var u = url.parse(req.url, true);
-    req.path  = u.pathname;
-    req.query = u.query;
+    var url = URI.parse(req.url, true);
+    req.path  = url.pathname;
+    req.query = url.query;
+    Object.assign(req, url);
   }catch(e){};
   var contentType = req.headers[ 'content-type' ];
   var type = (contentType || '').split(';')[0];

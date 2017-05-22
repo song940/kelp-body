@@ -23,7 +23,7 @@
     "example": "example"
   },
   "dependencies": {
-    "mail2": "*"
+    "mail2": ">1.2.0"
   },
   "keywords": [
     "kelp",

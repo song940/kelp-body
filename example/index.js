@@ -1,28 +1,27 @@
 const http = require('http');
 const kelp = require('kelp');
-const body = require('../');
+const body = require('..');
 
 const app = kelp();
 
-app.use(body);
-
-app.use(function(req, res, next){
-  if(req.path == '/upload'){
-    return res.end(JSON.stringify(req.body));
+app.use([
+  body,
+  function(req, res, next){
+    if(req.path == '/upload'){
+      return res.end(JSON.stringify(req.body));
+    }
+    next();
+  },
+  function(req, res, next){
+    res.writeHead(200, {'content-type': 'text/html'});
+    res.end(
+      '<form action="/upload" enctype="multipart/form-data" method="post">'+
+      '<input type="text" name="title"><br>'+
+      '<input type="file" name="upload" multiple="multiple"><br>'+
+      '<input type="submit" value="Upload">'+
+      '</form>'
+    );
   }
-  next();
-});
+]);
 
-app.use(function(req, res, next){
-  // show a file upload form
-  res.writeHead(200, {'content-type': 'text/html'});
-  res.end(
-    '<form action="/upload" enctype="multipart/form-data" method="post">'+
-    '<input type="text" name="title"><br>'+
-    '<input type="file" name="upload" multiple="multiple"><br>'+
-    '<input type="submit" value="Upload">'+
-    '</form>'
-  );
-});
-
-const server = http.createServer(app).listen(4000);
+http.createServer(app).listen(4000);
