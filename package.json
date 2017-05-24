@@ -17,13 +17,13 @@
   },
   "homepage": "https://github.com/song940/kelp-body#readme",
   "devDependencies": {
-    "kelp": "^1.0.2"
+    "kelp": "latest"
   },
   "directories": {
     "example": "example"
   },
   "dependencies": {
-    "mail2": ">1.2.0"
+    "mail2": "latest"
   },
   "keywords": [
     "kelp",
