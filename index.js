@@ -15,9 +15,8 @@ MIME.CRLF = '\r\n';
 module.exports = function(req, res, next){
   try{
     var url = URI.parse(req.url, true);
-    req.path  = url.pathname;
-    req.query = url.query;
     Object.assign(req, url);
+    req.path = url.pathname;
   }catch(e){};
   var contentType = req.headers[ 'content-type' ];
   var type = (contentType || '').split(';')[0];
