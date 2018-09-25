@@ -16,6 +16,7 @@ module.exports = function(req, res, next){
     req.query = url.query;
     req.path  = url.pathname;
     Object.assign(req, url);
+    req.path = url.pathname;
   }catch(e){};
   var contentType = req.headers[ 'content-type' ];
   var type = (contentType || '').split(';')[0];
