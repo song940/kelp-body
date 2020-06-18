@@ -1,6 +1,6 @@
 ## kelp-body ![NPM version](https://img.shields.io/npm/v/kelp-body.svg?style=flat)
 
-parse request for kelp
+Parse request data for kelp
 
 ### Installation
 ```bash

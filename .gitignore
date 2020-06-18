@@ -1,14 +1,5 @@
-.DS_*
+
 *.log
-logs
-**/*.backup.*
-**/*.back.*
+yarn.lock
 
-node_modules
-bower_componets
-
-*.sublime*
-
-psd
-thumb
-sketch
+node_modules/

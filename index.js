@@ -10,20 +10,21 @@ const MIME = require('mime2');
  * @param  {Function} next [description]
  * @return {[type]}        [description]
  */
-module.exports = function(req, res, next){
-  try{
+module.exports = function (req, res, next) {
+  try {
     var url = URI.parse(req.url, true);
     req.query = url.query;
     req.path  = url.pathname;
     Object.assign(req, url);
     req.path = url.pathname;
-  }catch(e){};
-  var contentType = req.headers[ 'content-type' ];
+  } catch (e) { };
+  var contentType = req.headers['content-type'];
   var type = (contentType || '').split(';')[0];
   var buffer = Buffer.alloc(0);
-  req.on('data', function(chunk){
-    buffer = Buffer.concat([ buffer, chunk ]);
-  }).on('end', function(){
+  req.on('data', function (chunk) {
+    console.log(chunk);
+    buffer = Buffer.concat([buffer, chunk]);
+  }).on('end', function () {
     req.data = buffer;
     req.text = buffer.toString();
     switch (type) {
@@ -36,6 +37,7 @@ module.exports = function(req, res, next){
         req.body = qs.parse(req.text);
         break;
       case 'application/json':
+      case 'application/csp-report':
         req.body = JSON.parse(req.text);
         break;
     }

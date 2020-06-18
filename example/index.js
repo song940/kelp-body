@@ -9,6 +9,7 @@ app.use([
   function(req, res, next){
     if(req.path == '/upload'){
       const { body } = req;
+      console.log(body);
       return res.end(JSON.stringify(body));
     }
     next();
