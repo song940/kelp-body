@@ -1,7 +1,15 @@
 'use strict';
-const URI  = require('url');
-const qs   = require('querystring');
+const url = require('url');
+const qs = require('querystring');
 const MIME = require('mime2');
+
+const readStream = stream => new Promise((resolve, reject) => {
+  const buffer = [];
+  stream
+    .on('error', reject)
+    .on('data', chunk => buffer.push(chunk))
+    .on('end', () => resolve(Buffer.concat(buffer)))
+});
 
 /**
  * [function description]
@@ -10,37 +18,36 @@ const MIME = require('mime2');
  * @param  {Function} next [description]
  * @return {[type]}        [description]
  */
-module.exports = function (req, res, next) {
+module.exports = async (req, res, next) => {
   try {
-    var url = URI.parse(req.url, true);
-    req.query = url.query;
-    req.path  = url.pathname;
-    Object.assign(req, url);
-    req.path = url.pathname;
+    const o = url.parse(req.url, true);
+    req.query = o.query;
+    req.path = o.pathname;
+    Object.assign(req, o);
   } catch (e) { };
-  var contentType = req.headers['content-type'];
-  var type = (contentType || '').split(';')[0];
-  var buffer = Buffer.alloc(0);
-  req.on('data', function (chunk) {
-    console.log(chunk);
-    buffer = Buffer.concat([buffer, chunk]);
-  }).on('end', function () {
-    req.data = buffer;
-    req.text = buffer.toString();
-    switch (type) {
-      case 'text/plain':
-        break;
-      case 'multipart/form-data':
-        req.body = MIME.parse(req.data, contentType);
-        break;
-      case 'application/x-www-form-urlencoded':
-        req.body = qs.parse(req.text);
-        break;
-      case 'application/json':
-      case 'application/csp-report':
-        req.body = JSON.parse(req.text);
-        break;
-    }
-    next();
-  });
+  req.get = name => {
+    if (!name) return;
+    const key = name.toLowerCase();
+    return req.headers[key];
+  };
+  req.data = await readStream(req);
+  const contentType = req.get('Content-Type');
+  const type = (contentType || '').split(';')[0];
+  switch (type) {
+    case 'text/plain':
+      req.text = req.data.toString();
+      break;
+    case 'multipart/form-data':
+      req.body = MIME.parse(req.data, contentType);
+      break;
+    case 'application/x-www-form-urlencoded':
+      req.body = qs.parse(req.data);
+      break;
+    case 'application/json':
+    case 'application/csp-report':
+      req.body = JSON.parse(req.data);
+      break;
+  }
+  return next();
 };
+

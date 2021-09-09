@@ -27,7 +27,6 @@ app.use(function(req, res, next){
 });
 ```
 
-
 ### Contributing
 - Fork this Repo first
 - Clone your Repo
@@ -39,7 +38,7 @@ app.use(function(req, res, next){
 - Enjoy hacking <3
 
 ### MIT license
-Copyright (c) 2016 lsong
+Copyright (c) 2016 Lsong <song940@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the &quot;Software&quot;), to deal

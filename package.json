@@ -1,6 +1,6 @@
 {
   "name": "kelp-body",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "Parse request data for kelp",
   "main": "index.js",
   "scripts": {
