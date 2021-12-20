@@ -19,12 +19,9 @@ const readStream = stream => new Promise((resolve, reject) => {
  * @return {[type]}        [description]
  */
 module.exports = async (req, res, next) => {
-  try {
-    const o = url.parse(req.url, true);
-    req.query = o.query;
-    req.path = o.pathname;
-    Object.assign(req, o);
-  } catch (e) { };
+  const { pathname, query } = url.parse(req.url, true);
+  req.query = query;
+  req.path = pathname;
   req.get = name => {
     if (!name) return;
     const key = name.toLowerCase();
@@ -41,7 +38,7 @@ module.exports = async (req, res, next) => {
       req.body = MIME.parse(req.data, contentType);
       break;
     case 'application/x-www-form-urlencoded':
-      req.body = qs.parse(req.data);
+      req.body = qs.parse(req.data + '');
       break;
     case 'application/json':
     case 'application/csp-report':
@@ -50,4 +47,3 @@ module.exports = async (req, res, next) => {
   }
   return next();
 };
-
