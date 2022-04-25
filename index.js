@@ -1,6 +1,5 @@
 'use strict';
 const url = require('url');
-const qs = require('querystring');
 const MIME = require('mime2');
 
 const readStream = stream => new Promise((resolve, reject) => {
@@ -11,6 +10,12 @@ const readStream = stream => new Promise((resolve, reject) => {
     .on('end', () => resolve(Buffer.concat(buffer)))
 });
 
+const decodeQuery = qs => qs.split('&').reduce((query, str) => {
+  const [k, v] = str.split('=');
+  query[decodeURIComponent(k)] = decodeURIComponent(v);
+  return query;
+}, {});
+
 /**
  * [function description]
  * @param  {[type]}   req  [description]
@@ -19,9 +24,12 @@ const readStream = stream => new Promise((resolve, reject) => {
  * @return {[type]}        [description]
  */
 module.exports = async (req, res, next) => {
-  const { pathname, query } = url.parse(req.url, true);
-  req.query = query;
-  req.path = pathname;
+  try {
+    const o = url.parse(req.url, true);
+    req.query = o.query;
+    req.path = o.pathname;
+    Object.assign(req, o);
+  } catch (e) { };
   req.get = name => {
     if (!name) return;
     const key = name.toLowerCase();
@@ -38,7 +46,7 @@ module.exports = async (req, res, next) => {
       req.body = MIME.parse(req.data, contentType);
       break;
     case 'application/x-www-form-urlencoded':
-      req.body = qs.parse(req.data + '');
+      req.body = decodeQuery(req.data.toString());
       break;
     case 'application/json':
     case 'application/csp-report':
